@@ -19,7 +19,9 @@ async fn rocket() -> _ {
     let user_repo: Arc<dyn UserRepository> =
         Arc::new(repository::user_inmemory_repo::UserInMemoryRepository::new());
 
-    rocket::build().manage(user_repo).mount(
+    let repositories = Arc::new(Repositories { user_repo });
+
+    rocket::build().manage(repositories).mount(
         "/users",
         routes![
             controller::create_user_ctrl::execute,
