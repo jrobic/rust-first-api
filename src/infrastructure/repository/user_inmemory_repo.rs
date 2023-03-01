@@ -42,7 +42,7 @@ impl UserRepository for UserInMemoryRepository {
         Ok(lock.to_vec())
     }
 
-    fn find_user_by_id(&self, id: &str) -> Result<User, FindByIdError> {
+    fn find_user_by_id(&self, id: String) -> Result<User, FindByIdError> {
         let lock = match self.users.lock() {
             Ok(lock) => lock,
             _ => return Err(FindByIdError::Unknown),
@@ -70,7 +70,7 @@ impl UserRepository for UserInMemoryRepository {
         }
     }
 
-    fn remove_user(&self, id: &str) -> Result<(), RemoveError> {
+    fn remove_user(&self, id: String) -> Result<(), RemoveError> {
         let mut lock = match self.users.lock() {
             Ok(lock) => lock,
             _ => return Err(RemoveError::Unknown),

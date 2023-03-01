@@ -27,6 +27,7 @@ async fn rocket() -> _ {
             controller::users_ctrl::create_user_ctrl,
             controller::users_ctrl::get_all_users_ctrl,
             controller::users_ctrl::get_user_ctrl,
+            controller::users_ctrl::update_user_ctrl,
         ],
     )
 }

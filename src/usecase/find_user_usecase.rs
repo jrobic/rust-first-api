@@ -26,7 +26,7 @@ impl<'a> FindUserUsecase<'a> {
         Self { user_repo }
     }
 
-    pub fn execute(&self, user_id: &str) -> Result<Response, Error> {
+    pub fn execute(&self, user_id: String) -> Result<Response, Error> {
         match self.user_repo.find_user_by_id(user_id) {
             Ok(user) => Ok(Response {
                 id: String::from(user.id),

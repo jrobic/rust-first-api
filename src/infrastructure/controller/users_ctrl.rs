@@ -8,6 +8,7 @@ use crate::{
         create_user_usecase::{CreateUserUsecase, Response},
         find_user_usecase::FindUserUsecase,
         get_all_users_usecase::GetAllUsersUsecase,
+        update_user_usecase::UpdateUserUsecase,
     },
     Repositories,
 };
@@ -21,9 +22,9 @@ pub fn get_all_users_ctrl(repositories: &State<Arc<Repositories>>) -> Json<Vec<R
     let response = users
         .into_iter()
         .map(|user| Response {
-            id: String::from(user.id),
-            name: String::from(user.name),
-            email: String::from(user.email),
+            id: user.id,
+            name: user.name,
+            email: user.email,
         })
         .collect();
 
@@ -34,12 +35,12 @@ pub fn get_all_users_ctrl(repositories: &State<Arc<Repositories>>) -> Json<Vec<R
 pub fn get_user_ctrl(id: String, repositories: &State<Arc<Repositories>>) -> Json<Response> {
     let find_user_usecase = FindUserUsecase::new(&repositories.user_repo);
 
-    let user = find_user_usecase.execute(&id).unwrap();
+    let user = find_user_usecase.execute(id).unwrap();
 
     Json(Response {
-        id: String::from(user.id),
-        name: String::from(user.name),
-        email: String::from(user.email),
+        id: user.id,
+        name: user.name,
+        email: user.email,
     })
 }
 
@@ -61,8 +62,39 @@ pub fn create_user_ctrl(
         .unwrap();
 
     Json(Response {
-        id: String::from(user.id),
-        name: String::from(user.name),
-        email: String::from(user.email),
+        id: user.id,
+        name: user.name,
+        email: user.email,
+    })
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct UpdateUser {
+    name: Option<String>,
+    email: Option<String>,
+}
+
+#[patch("/<id>", format = "application/json", data = "<update_user>")]
+pub fn update_user_ctrl(
+    id: String,
+    update_user: Json<UpdateUser>,
+    repositories: &State<Arc<Repositories>>,
+) -> Json<Response> {
+    let update_user_usecase = UpdateUserUsecase::new(&repositories.user_repo);
+
+    let user = update_user_usecase
+        .execute(
+            id,
+            crate::usecase::update_user_usecase::UpdateUser {
+                name: update_user.name.clone(),
+                email: update_user.email.clone(),
+            },
+        )
+        .unwrap();
+
+    Json(Response {
+        id: user.id,
+        name: user.name,
+        email: user.email,
     })
 }
