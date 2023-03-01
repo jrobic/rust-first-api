@@ -16,12 +16,12 @@ use crate::{
 };
 
 #[get("/", format = "application/json")]
-pub fn get_all_users_ctrl(
+pub async fn get_all_users_ctrl(
     repositories: &State<Arc<Repositories>>,
 ) -> ApiResponse<Option<Vec<Response>>> {
     let get_all_users_usecase = GetAllUsersUsecase::new(&repositories.user_repo);
 
-    match get_all_users_usecase.execute() {
+    match get_all_users_usecase.execute().await {
         Ok(users) => {
             let response = users
                 .into_iter()
@@ -39,13 +39,13 @@ pub fn get_all_users_ctrl(
 }
 
 #[get("/<id>", format = "application/json")]
-pub fn get_user_ctrl(
+pub async fn get_user_ctrl(
     id: String,
     repositories: &State<Arc<Repositories>>,
 ) -> ApiResponse<Option<Response>> {
     let find_user_usecase = FindUserUsecase::new(&repositories.user_repo);
 
-    match find_user_usecase.execute(id) {
+    match find_user_usecase.execute(id).await {
         Ok(user) => ApiResponse::new(
             Status::Ok,
             Some(Response {
@@ -67,13 +67,16 @@ pub struct NewUser {
 }
 
 #[post("/", format = "application/json", data = "<new_user>")]
-pub fn create_user_ctrl(
+pub async fn create_user_ctrl(
     new_user: Json<NewUser>,
     repositories: &State<Arc<Repositories>>,
 ) -> ApiResponse<Option<Response>> {
     let create_user_usecase = CreateUserUsecase::new(&repositories.user_repo);
 
-    match create_user_usecase.execute(User::new(new_user.name.clone(), new_user.email.clone())) {
+    match create_user_usecase
+        .execute(User::new(new_user.name.clone(), new_user.email.clone()))
+        .await
+    {
         Ok(user) => ApiResponse::new(
             Status::Created,
             Some(Response {
@@ -99,20 +102,23 @@ pub struct UpdateUser {
 }
 
 #[patch("/<id>", format = "application/json", data = "<update_user>")]
-pub fn update_user_ctrl(
+pub async fn update_user_ctrl(
     id: String,
     update_user: Json<UpdateUser>,
     repositories: &State<Arc<Repositories>>,
 ) -> ApiResponse<Option<Response>> {
     let update_user_usecase = UpdateUserUsecase::new(&repositories.user_repo);
 
-    match update_user_usecase.execute(
-        id,
-        crate::usecase::update_user_usecase::UpdateUser {
-            name: update_user.name.clone(),
-            email: update_user.email.clone(),
-        },
-    ) {
+    match update_user_usecase
+        .execute(
+            id,
+            crate::usecase::update_user_usecase::UpdateUser {
+                name: update_user.name.clone(),
+                email: update_user.email.clone(),
+            },
+        )
+        .await
+    {
         Ok(user) => ApiResponse::new(
             Status::Ok,
             Some(Response {
@@ -128,14 +134,14 @@ pub fn update_user_ctrl(
 }
 
 #[delete("/<id>", format = "application/json")]
-pub fn remove_user_ctrl(
+pub async fn remove_user_ctrl(
     id: String,
     repositories: &State<Arc<Repositories>>,
 ) -> ApiResponse<Option<RemoveResponse>> {
     let delete_user_usecase =
         crate::usecase::remove_user_usecase::RemoveUserUsecase::new(&repositories.user_repo);
 
-    match delete_user_usecase.execute(id.clone()) {
+    match delete_user_usecase.execute(id.clone()).await {
         Ok(_) => ApiResponse::new(
             Status::Ok,
             Some(RemoveResponse { id: id.clone() }),

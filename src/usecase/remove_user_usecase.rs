@@ -21,8 +21,8 @@ impl<'a> RemoveUserUsecase<'a> {
         Self { user_repo }
     }
 
-    pub fn execute(&self, id: String) -> Result<RemoveResponse, UserException> {
-        match self.user_repo.remove_user(id.clone()) {
+    pub async fn execute(&self, id: String) -> Result<RemoveResponse, UserException> {
+        match self.user_repo.remove_user(id.clone()).await {
             Ok(_user) => Ok(RemoveResponse { id }),
             Err(RemoveError::NotFound) => Err(UserException::NotFound),
             Err(RemoveError::Unknown) => Err(UserException::Unknown),

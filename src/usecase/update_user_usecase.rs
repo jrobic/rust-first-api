@@ -29,8 +29,12 @@ impl<'a> UpdateUserUsecase<'a> {
         Self { user_repo }
     }
 
-    pub fn execute(&self, id: String, update_user: UpdateUser) -> Result<Response, UserException> {
-        let user = match self.user_repo.find_user_by_id(id) {
+    pub async fn execute(
+        &self,
+        id: String,
+        update_user: UpdateUser,
+    ) -> Result<Response, UserException> {
+        let user = match self.user_repo.find_user_by_id(id).await {
             Ok(user) => user,
             Err(_) => return Err(UserException::NotFound),
         };
@@ -41,7 +45,7 @@ impl<'a> UpdateUserUsecase<'a> {
             email: update_user.email.unwrap_or(user.email),
         };
 
-        match self.user_repo.update_user(user_to_update) {
+        match self.user_repo.update_user(user_to_update).await {
             Ok(user) => Ok(Response {
                 id: user.id,
                 name: user.name,

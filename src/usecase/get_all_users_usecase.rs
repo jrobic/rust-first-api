@@ -15,8 +15,8 @@ impl<'a> GetAllUsersUsecase<'a> {
         Self { user_repo }
     }
 
-    pub fn execute(&self) -> Result<Vec<User>, UserException> {
-        match self.user_repo.find_all_users() {
+    pub async fn execute(&self) -> Result<Vec<User>, UserException> {
+        match self.user_repo.find_all_users().await {
             Ok(users) => {
                 let response = users
                     .into_iter()

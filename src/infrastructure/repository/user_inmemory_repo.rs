@@ -12,6 +12,7 @@ pub struct UserInMemoryRepository {
 }
 
 impl UserInMemoryRepository {
+    #![allow(dead_code)]
     pub fn new() -> Self {
         Self {
             users: Mutex::new(vec![]),
@@ -19,8 +20,9 @@ impl UserInMemoryRepository {
     }
 }
 
+#[async_trait]
 impl UserRepository for UserInMemoryRepository {
-    fn add_user(&self, user: User) -> Result<User, AddError> {
+    async fn add_user(&self, user: User) -> Result<User, AddError> {
         format!("user added: {:?}", user);
 
         let mut lock = match self.users.lock() {
@@ -37,7 +39,7 @@ impl UserRepository for UserInMemoryRepository {
         Ok(user)
     }
 
-    fn find_all_users(&self) -> Result<Vec<User>, FindAllError> {
+    async fn find_all_users(&self) -> Result<Vec<User>, FindAllError> {
         let lock = match self.users.lock() {
             Ok(lock) => lock,
             _ => return Err(FindAllError::Unknown),
@@ -46,7 +48,7 @@ impl UserRepository for UserInMemoryRepository {
         Ok(lock.to_vec())
     }
 
-    fn find_user_by_id(&self, id: String) -> Result<User, FindByIdError> {
+    async fn find_user_by_id(&self, id: String) -> Result<User, FindByIdError> {
         let lock = match self.users.lock() {
             Ok(lock) => lock,
             _ => return Err(FindByIdError::Unknown),
@@ -58,7 +60,7 @@ impl UserRepository for UserInMemoryRepository {
         }
     }
 
-    fn update_user(&self, user: User) -> Result<User, UpdateError> {
+    async fn update_user(&self, user: User) -> Result<User, UpdateError> {
         let mut lock = match self.users.lock() {
             Ok(lock) => lock,
             _ => return Err(UpdateError::Unknown),
@@ -74,7 +76,7 @@ impl UserRepository for UserInMemoryRepository {
         }
     }
 
-    fn remove_user(&self, id: String) -> Result<(), RemoveError> {
+    async fn remove_user(&self, id: String) -> Result<(), RemoveError> {
         let mut lock = match self.users.lock() {
             Ok(lock) => lock,
             _ => return Err(RemoveError::Unknown),
