@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::domain::repository::user_repo::{RemoveError, UserRepository};
 
@@ -8,7 +8,7 @@ pub struct RemoveUserUsecase<'a> {
     pub user_repo: &'a Arc<dyn UserRepository>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct RemoveResponse {
     pub id: String,
 }

@@ -33,5 +33,11 @@ async fn rocket() -> _ {
                 controller::users_ctrl::remove_user_ctrl,
             ],
         )
-        .register("/", catchers![controller::catchers_ctrl::not_found_ctrl])
+        .register(
+            "/",
+            catchers![
+                controller::catchers_ctrl::not_found_ctrl,
+                controller::catchers_ctrl::catch_default_ctrl
+            ],
+        )
 }
