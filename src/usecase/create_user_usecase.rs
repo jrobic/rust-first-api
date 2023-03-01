@@ -33,9 +33,9 @@ impl<'a> CreateUserUsecase<'a> {
 
         match self.user_repo.add_user(user) {
             Ok(user) => Ok(Response {
-                id: String::from(user.id),
-                name: String::from(user.name),
-                email: String::from(user.email),
+                id: user.id,
+                name: user.name,
+                email: user.email,
             }),
             Err(AddError::Unknown) => Err(Error::Unknown),
         }
