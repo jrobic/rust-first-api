@@ -21,13 +21,17 @@ async fn rocket() -> _ {
 
     let repositories = Arc::new(Repositories { user_repo });
 
-    rocket::build().manage(repositories).mount(
-        "/users",
-        routes![
-            controller::users_ctrl::create_user_ctrl,
-            controller::users_ctrl::get_all_users_ctrl,
-            controller::users_ctrl::get_user_ctrl,
-            controller::users_ctrl::update_user_ctrl,
-        ],
-    )
+    rocket::build()
+        .manage(repositories)
+        .mount(
+            "/users",
+            routes![
+                controller::users_ctrl::create_user_ctrl,
+                controller::users_ctrl::get_all_users_ctrl,
+                controller::users_ctrl::get_user_ctrl,
+                controller::users_ctrl::update_user_ctrl,
+                controller::users_ctrl::remove_user_ctrl,
+            ],
+        )
+        .register("/", catchers![controller::catchers_ctrl::not_found_ctrl])
 }

@@ -8,6 +8,7 @@ use crate::{
         create_user_usecase::{CreateUserUsecase, Response},
         find_user_usecase::FindUserUsecase,
         get_all_users_usecase::GetAllUsersUsecase,
+        remove_user_usecase::RemoveResponse,
         update_user_usecase::UpdateUserUsecase,
     },
     Repositories,
@@ -44,7 +45,7 @@ pub fn get_user_ctrl(id: String, repositories: &State<Arc<Repositories>>) -> Jso
     })
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub struct NewUser {
     name: String,
     email: String,
@@ -68,7 +69,7 @@ pub fn create_user_ctrl(
     })
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub struct UpdateUser {
     name: Option<String>,
     email: Option<String>,
@@ -97,4 +98,17 @@ pub fn update_user_ctrl(
         name: user.name,
         email: user.email,
     })
+}
+
+#[delete("/<id>", format = "application/json")]
+pub fn remove_user_ctrl(
+    id: String,
+    repositories: &State<Arc<Repositories>>,
+) -> Json<RemoveResponse> {
+    let delete_user_usecase =
+        crate::usecase::remove_user_usecase::RemoveUserUsecase::new(&repositories.user_repo);
+
+    delete_user_usecase.execute(id.clone()).unwrap();
+
+    Json(RemoveResponse { id: id })
 }
