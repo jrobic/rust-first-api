@@ -29,9 +29,9 @@ impl<'a> FindUserUsecase<'a> {
     pub fn execute(&self, user_id: String) -> Result<Response, Error> {
         match self.user_repo.find_user_by_id(user_id) {
             Ok(user) => Ok(Response {
-                id: String::from(user.id),
-                name: String::from(user.name),
-                email: String::from(user.email),
+                id: user.id,
+                name: user.name,
+                email: user.email,
             }),
             Err(FindByIdError::NotFound) => Err(Error::NotFound),
             Err(FindByIdError::Unknown) => Err(Error::Unknown),

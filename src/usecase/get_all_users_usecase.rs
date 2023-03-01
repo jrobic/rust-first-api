@@ -31,9 +31,9 @@ impl<'a> GetAllUsersUsecase<'a> {
                 let response = users
                     .into_iter()
                     .map(|user| Response {
-                        id: String::from(user.id),
-                        name: String::from(user.name),
-                        email: String::from(user.email),
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
                     })
                     .collect();
                 Ok(response)

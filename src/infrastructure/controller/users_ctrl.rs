@@ -110,5 +110,5 @@ pub fn remove_user_ctrl(
 
     delete_user_usecase.execute(id.clone()).unwrap();
 
-    Json(RemoveResponse { id: id })
+    Json(RemoveResponse { id })
 }
