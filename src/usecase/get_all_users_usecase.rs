@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use serde::Serialize;
 
-use crate::domain::repository::user_repo::{FetchAllError, UserRepository};
+use crate::domain::repository::user_repo::{FindAllError, UserRepository};
 
 pub struct GetAllUsersUsecase<'a> {
     pub user_repo: &'a Arc<dyn UserRepository>,
@@ -26,7 +26,7 @@ impl<'a> GetAllUsersUsecase<'a> {
     }
 
     pub fn execute(&self) -> Result<Vec<Response>, Error> {
-        match self.user_repo.fetch_all_users() {
+        match self.user_repo.find_all_users() {
             Ok(users) => {
                 let response = users
                     .into_iter()
@@ -38,7 +38,7 @@ impl<'a> GetAllUsersUsecase<'a> {
                     .collect();
                 Ok(response)
             }
-            Err(FetchAllError::Unknown) => Err(Error::Unknown),
+            Err(FindAllError::Unknown) => Err(Error::Unknown),
         }
     }
 }

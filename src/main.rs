@@ -24,8 +24,9 @@ async fn rocket() -> _ {
     rocket::build().manage(repositories).mount(
         "/users",
         routes![
-            controller::create_user_ctrl::execute,
-            controller::get_all_users_ctrl::execute
+            controller::users_ctrl::create_user_ctrl,
+            controller::users_ctrl::get_all_users_ctrl,
+            controller::users_ctrl::get_user_ctrl,
         ],
     )
 }
