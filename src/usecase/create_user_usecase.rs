@@ -4,6 +4,7 @@ use serde::Serialize;
 
 use crate::domain::{
     entity::user_entity::User,
+    exception::UserException,
     repository::user_repo::{AddError, UserRepository},
 };
 
@@ -18,17 +19,12 @@ pub struct Response {
     pub email: String,
 }
 
-#[derive(Debug)]
-pub enum Error {
-    Unknown,
-}
-
 impl<'a> CreateUserUsecase<'a> {
     pub fn new(user_repo: &'a Arc<dyn UserRepository>) -> Self {
         Self { user_repo }
     }
 
-    pub fn execute(&self, user: User) -> Result<Response, Error> {
+    pub fn execute(&self, user: User) -> Result<Response, UserException> {
         let user = User::new(user.name, user.email);
 
         match self.user_repo.add_user(user) {
@@ -37,7 +33,8 @@ impl<'a> CreateUserUsecase<'a> {
                 name: user.name,
                 email: user.email,
             }),
-            Err(AddError::Unknown) => Err(Error::Unknown),
+            Err(AddError::Conflict) => Err(UserException::Conflict),
+            Err(AddError::Unknown) => Err(UserException::Unknown),
         }
     }
 }

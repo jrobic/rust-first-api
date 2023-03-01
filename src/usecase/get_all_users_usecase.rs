@@ -1,23 +1,13 @@
 use std::sync::Arc;
 
-use serde::Serialize;
-
-use crate::domain::repository::user_repo::{FindAllError, UserRepository};
+use crate::domain::{
+    entity::user_entity::User,
+    exception::UserException,
+    repository::user_repo::{FindAllError, UserRepository},
+};
 
 pub struct GetAllUsersUsecase<'a> {
     pub user_repo: &'a Arc<dyn UserRepository>,
-}
-
-#[derive(Debug, Serialize)]
-pub struct Response {
-    pub id: String,
-    pub name: String,
-    pub email: String,
-}
-
-#[derive(Debug)]
-pub enum Error {
-    Unknown,
 }
 
 impl<'a> GetAllUsersUsecase<'a> {
@@ -25,12 +15,12 @@ impl<'a> GetAllUsersUsecase<'a> {
         Self { user_repo }
     }
 
-    pub fn execute(&self) -> Result<Vec<Response>, Error> {
+    pub fn execute(&self) -> Result<Vec<User>, UserException> {
         match self.user_repo.find_all_users() {
             Ok(users) => {
                 let response = users
                     .into_iter()
-                    .map(|user| Response {
+                    .map(|user| User {
                         id: user.id,
                         name: user.name,
                         email: user.email,
@@ -38,7 +28,7 @@ impl<'a> GetAllUsersUsecase<'a> {
                     .collect();
                 Ok(response)
             }
-            Err(FindAllError::Unknown) => Err(Error::Unknown),
+            Err(FindAllError::Unknown) => Err(UserException::Unknown),
         }
     }
 }

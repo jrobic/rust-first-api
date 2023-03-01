@@ -2,6 +2,7 @@ use crate::domain::entity::user_entity::User;
 
 #[derive(Debug)]
 pub enum AddError {
+    Conflict,
     Unknown,
 }
 

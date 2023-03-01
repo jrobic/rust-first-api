@@ -28,6 +28,10 @@ impl UserRepository for UserInMemoryRepository {
             _ => return Err(AddError::Unknown),
         };
 
+        if lock.iter().any(|u| u.name == user.name) {
+            return Err(AddError::Conflict);
+        }
+
         lock.push(user.clone());
 
         Ok(user)

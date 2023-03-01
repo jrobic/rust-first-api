@@ -4,6 +4,7 @@ use serde::Serialize;
 
 use crate::domain::{
     entity::user_entity::User,
+    exception::UserException,
     repository::user_repo::{UpdateError, UserRepository},
 };
 
@@ -18,12 +19,6 @@ pub struct Response {
     pub email: String,
 }
 
-#[derive(Debug)]
-pub enum Error {
-    Unknown,
-    NotFound,
-}
-
 pub struct UpdateUser {
     pub name: Option<String>,
     pub email: Option<String>,
@@ -34,10 +29,10 @@ impl<'a> UpdateUserUsecase<'a> {
         Self { user_repo }
     }
 
-    pub fn execute(&self, id: String, update_user: UpdateUser) -> Result<Response, Error> {
+    pub fn execute(&self, id: String, update_user: UpdateUser) -> Result<Response, UserException> {
         let user = match self.user_repo.find_user_by_id(id) {
             Ok(user) => user,
-            Err(_) => return Err(Error::NotFound),
+            Err(_) => return Err(UserException::NotFound),
         };
 
         let user_to_update = User {
@@ -52,8 +47,8 @@ impl<'a> UpdateUserUsecase<'a> {
                 name: user.name,
                 email: user.email,
             }),
-            Err(UpdateError::NotFound) => Err(Error::NotFound),
-            Err(UpdateError::Unknown) => Err(Error::Unknown),
+            Err(UpdateError::NotFound) => Err(UserException::NotFound),
+            Err(UpdateError::Unknown) => Err(UserException::Unknown),
         }
     }
 }
