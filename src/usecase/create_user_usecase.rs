@@ -24,10 +24,10 @@ impl<'a> CreateUserUsecase<'a> {
         Self { user_repo }
     }
 
-    pub fn execute(&self, user: User) -> Result<Response, UserException> {
+    pub async fn execute(&self, user: User) -> Result<Response, UserException> {
         let user = User::new(user.name, user.email);
 
-        match self.user_repo.add_user(user) {
+        match self.user_repo.add_user(user).await {
             Ok(user) => Ok(Response {
                 id: user.id,
                 name: user.name,

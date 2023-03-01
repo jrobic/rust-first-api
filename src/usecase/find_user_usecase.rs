@@ -15,8 +15,8 @@ impl<'a> FindUserUsecase<'a> {
         Self { user_repo }
     }
 
-    pub fn execute(&self, user_id: String) -> Result<User, UserException> {
-        match self.user_repo.find_user_by_id(user_id) {
+    pub async fn execute(&self, user_id: String) -> Result<User, UserException> {
+        match self.user_repo.find_user_by_id(user_id).await {
             Ok(user) => Ok(User {
                 id: user.id,
                 name: user.name,

@@ -26,10 +26,11 @@ pub enum RemoveError {
     NotFound,
 }
 
+#[async_trait]
 pub trait UserRepository: Send + Sync {
-    fn find_all_users(&self) -> Result<Vec<User>, FindAllError>;
-    fn find_user_by_id(&self, id: String) -> Result<User, FindByIdError>;
-    fn add_user(&self, user: User) -> Result<User, AddError>;
-    fn update_user(&self, user: User) -> Result<User, UpdateError>;
-    fn remove_user(&self, id: String) -> Result<(), RemoveError>;
+    async fn find_all_users(&self) -> Result<Vec<User>, FindAllError>;
+    async fn find_user_by_id(&self, id: String) -> Result<User, FindByIdError>;
+    async fn add_user(&self, user: User) -> Result<User, AddError>;
+    async fn update_user(&self, user: User) -> Result<User, UpdateError>;
+    async fn remove_user(&self, id: String) -> Result<(), RemoveError>;
 }
