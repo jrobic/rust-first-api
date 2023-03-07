@@ -38,3 +38,36 @@ impl<'a> CreateUserUsecase<'a> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::sync::Arc;
+
+    use rocket::tokio;
+
+    use crate::{
+        domain::{entity::user_entity::User, repository::user_repo::UserRepository},
+        infrastructure::repository::user_inmemory_repo::UserInMemoryRepository,
+        usecase::create_user_usecase::CreateUserUsecase,
+    };
+
+    #[tokio::test]
+    async fn create_new_user() {
+        let user_in_memory_repo = UserInMemoryRepository::new();
+        let user_repo: Arc<dyn UserRepository> = Arc::new(user_in_memory_repo);
+        let create_user_usecase = CreateUserUsecase::new(&user_repo);
+
+        let user = create_user_usecase
+            .execute(User::new("John".to_string(), "Doe".to_string()))
+            .await;
+
+        if user.is_ok() {
+            let user = user.unwrap();
+
+            assert_eq!(user.name, "John");
+            assert_eq!(user.email, "Doe");
+
+            assert!(!user.id.is_empty());
+        }
+    }
+}
