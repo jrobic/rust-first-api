@@ -44,6 +44,13 @@ async fn rocket() -> _ {
                 controller::users_ctrl::remove_user_ctrl,
             ],
         )
+        .mount(
+            "/",
+            routes![
+                controller::common_ctrl::health,
+                controller::common_ctrl::headers
+            ],
+        )
         .register(
             "/",
             catchers![
