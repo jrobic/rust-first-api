@@ -1,4 +1,4 @@
 **
-!src/*.rs
+!src/**
 !Cargo.lock
 !Cargo.toml

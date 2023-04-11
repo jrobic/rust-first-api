@@ -15,7 +15,7 @@ use crate::{
     Repositories,
 };
 
-#[get("/", format = "application/json")]
+#[get("/")]
 pub async fn get_all_users_ctrl(
     repositories: &State<Arc<Repositories>>,
 ) -> ApiResponse<Option<Vec<Response>>> {
@@ -38,7 +38,7 @@ pub async fn get_all_users_ctrl(
     }
 }
 
-#[get("/<id>", format = "application/json")]
+#[get("/<id>")]
 pub async fn get_user_ctrl(
     id: String,
     repositories: &State<Arc<Repositories>>,
@@ -66,7 +66,7 @@ pub struct NewUser {
     email: String,
 }
 
-#[post("/", format = "application/json", data = "<new_user>")]
+#[post("/", data = "<new_user>")]
 pub async fn create_user_ctrl(
     new_user: Json<NewUser>,
     repositories: &State<Arc<Repositories>>,
@@ -101,7 +101,7 @@ pub struct UpdateUser {
     email: Option<String>,
 }
 
-#[patch("/<id>", format = "application/json", data = "<update_user>")]
+#[patch("/<id>", data = "<update_user>")]
 pub async fn update_user_ctrl(
     id: String,
     update_user: Json<UpdateUser>,
@@ -133,7 +133,7 @@ pub async fn update_user_ctrl(
     }
 }
 
-#[delete("/<id>", format = "application/json")]
+#[delete("/<id>")]
 pub async fn remove_user_ctrl(
     id: String,
     repositories: &State<Arc<Repositories>>,

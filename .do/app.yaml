@@ -1,0 +1,35 @@
+name: rust-first-api
+region: fra
+services:
+  - name: api
+    github:
+      branch: main
+      repo: jrobic/rust-first-api
+      deploy_on_push: true
+    dockerfile_path: Dockerfile
+    http_port: 8000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    routes:
+      - path: /
+    source_dir: ./
+    health_check:
+      initial_delay_seconds: 0
+      period_seconds: 10
+      timeout_seconds: 10
+      success_threshold: 1
+      failure_threshold: 9
+      http_path: /health
+      port: 8000
+    envs:
+      - key: ROCKET_LOG_LEVEL
+        scope: RUN_TIME
+        value: normal
+      - key: SUPABASE_API_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: EV[1:LkBb05T39ednKFYCNKfLAjdWf+FDLxC4:G29C8dtTLXRNu8SFpcUXbte0SqlyaJeECbC97UtgbgLyRVez5bHF07P/OF28TqKSg722HIUC9bpcELCz6qmE1Ff5N8BYwlXlfdKQ++XWQwfEKfoinw5yYZ2+ss3ekLUX9zZAXELBYKGzJLks7g8/oxbwRSLFl+eOPZYHYp7JJZioptAQqOAIcfd5R/DCg58XJPCiMUSm6L8U/LNUoWjwcA6q2foEpIS4myCqDtoR/oYV5E8mk/LT/w7HZyBALGqRbxPgzUrwSzTRHzy0G+7UmM4g4REoS6JAjoTEO1+NiX0=]
+      - key: SUPABASE_API_URL
+        scope: RUN_TIME
+        type: SECRET
+        value: EV[1:XzHpCtIrP2W06qybN+DcTN7pWuG+l2I+:bcVtlVPBSsdxu24O/laTbH5Rcl0vHouRvKgiTv0nl177egcQLI4KPELubxh3nMRqAngRzr51kUOMPLTcXqIeUQ==]
